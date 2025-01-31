@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32 Hall Sensor Monitor</title>
+  <title>Clutch and Throttle Settings</title>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     /* Основные стили */
@@ -13,11 +13,11 @@
       padding: 0;
       background-color: #f4f4f9;
     }
-    h1, h2 {
+    h1, h2, h3 {
       text-align: center;
     }
     h1 {
-      margin-top: 10px;
+      margin-top: 0px;
     }
     button {
       padding: 10px 20px;
@@ -59,9 +59,10 @@
     }
     @media screen and (max-width: 768px) {
       h1 { font-size: 24px; }
-      h2 { font-size: 20px; }
+      h2 { font-size: 14px; }
+      h3 { font-size: 20px; }
       .container p { font-size: 16px; }
-      button { font-size: 14px; }
+      button { font-size: 12px; }
       #voltageLine { width: 100%; height: 5px; }
     }
     .slider-container {
@@ -120,7 +121,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Clutch and Gas Settings</h1>
+    <h1>Clutch and Throttle Settings</h1>
     <button id="connectBleButton">Connect</button>
     <button id="disconnectBleButton">Disconnect</button>
     <p>State: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p> 
@@ -148,31 +149,39 @@
     Default
   </button>
 </div>
-    <h2>Coef 1</h2>
+    <h2>Flywheel Effect Acceleration</h2>
     <div class="slider-container">
       <!-- Tooltip displaying value -->
       <div class="tooltip" id="tooltip1">85</div>
       <!-- Range input slider -->
-      <input type="range" id="slider1" min="0" max="100" value="85">
+      <input type="range" id="slider1" min="1" max="30" value="15">
     </div>
-    <h2>Coef 2</h2>
+    <h2>Flywheel Effect Deceleration</h2>
     <div class="slider-container">
       <!-- Tooltip displaying value -->
       <div class="tooltip" id="tooltip3">85</div>
       <!-- Range input slider -->
-      <input type="range" id="slider3" min="0" max="100" value="85">
+      <input type="range" id="slider3" min="1" max="30" value="15">
     </div>
-    <h2>Clutch calibration</h2>
+ <h2>Clutch engagement speed</h2>
+    <div class="slider-container">
+      <!-- Tooltip displaying value -->
+      <div class="tooltip" id="tooltip4">85</div>
+      <!-- Range input slider -->
+      <input type="range" id="slider4" min="1" max="81" value="15">
+    </div>
+
+    <h3>Clutch calibration</h3>
     
     <div class="inline-row">
-      <button id="savePressedButton">Save Fully Pressed</button>
-      <button id="saveReleasedButton">Save Fully Released</button>
-      <h2>Current Voltage A0</h2>
-      <p><span id="voltageContainerA0">N</span> | Fully Pressed A0: <span id="fullyPressedValueA0">N</span> Fully Released A0: <span id="fullyReleasedValueA0">N</span></p>
-      <button id="savePressedButtonA1">Save Fully Pressed A1</button>
-      <button id="saveReleasedButtonA1">Save Fully Released A1</button>
-      <h2>Current Voltage A1</h2>
-      <p><span id="voltageContainerA1">N</span> | Fully Pressed A0: <span id="fullyPressedValueA1">N</span> Fully Released A0: <span id="fullyReleasedValueA1">N</span></p>
+      <button id="savePressedButton">Save Clutch Pressed</button>
+      <button id="saveReleasedButton">Save Clutch Released</button>
+            <p><span id="voltageContainerA0">-</span> | <span id="fullyPressedValueA0">-</span> | <span id="fullyReleasedValueA0">-</span></p>
+<h3>Throttle calibration</h3>
+      <button id="savePressedButtonA1">Save Throttle Open</button>
+      <button id="saveReleasedButtonA1">Save Throttle Closed</button>
+      
+      <p><span id="voltageContainerA1">-</span> | <span id="fullyPressedValueA1">-</span> | <span id="fullyReleasedValueA1">-</span></p>
     </div>
     
   </div>
@@ -217,9 +226,14 @@
     const slider4 = document.getElementById("slider4");
     const tooltip4 = document.getElementById("tooltip4");
 
+    slider4.addEventListener("input", () => {
+        updateSlider(slider4, tooltip4);
+    });
+
     // Initial positioning on page load
     updateSlider(slider3, tooltip3);
     updateSlider(slider1, tooltip1);
+    updateSlider(slider4, tooltip4);
     
   </script>
   <script>
@@ -296,7 +310,7 @@
     const saveReleasedButton = document.getElementById('saveReleasedButton');
     const savePressedButtonA1 = document.getElementById('savePressedButtonA1');
     const saveReleasedButtonA1 = document.getElementById('saveReleasedButtonA1');
-    const deviceName = 'ESP32_HallSensor';
+    const deviceName = 'Stark_Clutch';
     const bleServiceUuid = '19b10000-e8f2-537e-4f6c-d104768a1214';
     const sensorCharacteristicUuid = '19b10001-e8f2-537e-4f6c-d104768a1214';
     const sensorA1CharacteristicUuid = '19b10003-e8f2-537e-4f6c-d104768a1214';
@@ -413,8 +427,8 @@ const handleCharacteristicValueChanged = (event) => {
     fullyPressedValueA1 = parseFloat(data[4]);
     fullyReleasedValueA1 = parseFloat(data[5]);
 
-    voltageContainerA0.textContent = `A0: ${currentVoltageA0}`;
-    voltageContainerA1.textContent = `A1: ${currentVoltageA1}`;
+    voltageContainerA0.textContent = currentVoltageA0;
+    voltageContainerA1.textContent = currentVoltageA1;
     fullyPressedValueA0Container.textContent = fullyPressedValueA0;
     fullyReleasedValueA0Container.textContent = fullyReleasedValueA0;
     fullyPressedValueA1Container.textContent = fullyPressedValueA1;
@@ -445,6 +459,13 @@ const handleCharacteristicValueChanged = (event) => {
       slider3.value = coefValue2Float;
       updateSlider(slider3, tooltip3);
       console.log("Slider 3 loaded");
+
+ // Read values for Slider 4 (Analog Step 2)
+      const stepValue2 = await bleQueue.enqueue(() => analogStepCharacteristic2.readValue());
+      const stepValue2Int = new Int16Array(stepValue2.buffer)[0];
+      slider4.value = stepValue2Int;
+      updateSlider(slider4, tooltip4);
+      console.log("Slider 4 loaded");
 
       console.log("Slider values updated from BLE");
     } catch (error) {
@@ -645,6 +666,10 @@ slider1.addEventListener("input", () => {
 
 slider3.addEventListener("input", () => {
     updateAnalogCoef2(slider3.value)
+});
+
+slider4.addEventListener("input", () => {
+  updateAnalogStep2(slider4.value)
 });
 
 document.getElementById('saveDropdownValue').addEventListener('click', () => {
