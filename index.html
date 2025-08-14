@@ -31,6 +31,15 @@
       width: 45%;
       box-sizing: border-box;
     }
+    .button-red {
+    background-color: red !important;
+    color: white;
+  }
+  .button-red:hover {
+    background-color: rgb(255, 75, 75) !important;
+    color: white;
+  }
+
     button:hover {
       background-color: #45a049;
     }
@@ -125,6 +134,7 @@
     <button id="connectBleButton">Connect</button>
     <button id="disconnectBleButton">Disconnect</button>
     <p>State: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p> 
+     <button id="bikeLockButton">Bike locked</button>
     <div class="chart-container">
       <canvas id="chartJSContainer"></canvas>
     </div>
@@ -310,6 +320,7 @@
     const saveReleasedButton = document.getElementById('saveReleasedButton');
     const savePressedButtonA1 = document.getElementById('savePressedButtonA1');
     const saveReleasedButtonA1 = document.getElementById('saveReleasedButtonA1');
+    const bikeLockButton = document.getElementById('bikeLockButton');
     const deviceName = 'Stark_Clutch';
     const bleServiceUuid = '19b10000-e8f2-537e-4f6c-d104768a1214';
     const sensorCharacteristicUuid = '19b10001-e8f2-537e-4f6c-d104768a1214';
@@ -321,7 +332,7 @@
     const analogStepCharacteristicUuid1 = '19b10007-e8f2-537e-4f6c-d104768a1214';
     const analogCoefCharacteristicUuid2 = '19b10008-e8f2-537e-4f6c-d104768a1214';
     const analogStepCharacteristicUuid2 = '19b10009-e8f2-537e-4f6c-d104768a1214';
-
+    const bikeLockCharacteristicUuid = '19b10010-e8f2-537e-4f6c-d104768a1214';
 
     class BLEOperationQueue {
       constructor() {
@@ -366,10 +377,12 @@
     let analogStepCharacteristic1;
     let analogCoefCharacteristic2;
     let analogStepCharacteristic2;
+    let bikeLockCharacteristic;
     let fullyPressedValueA0 = 0;
     let fullyReleasedValueA0 = 0;
     let fullyPressedValueA1 = 0;
     let fullyReleasedValueA1 = 0;
+    let bikeLockStatus = false;
 
     // Подключение Bluetooth
     connectButton.addEventListener('click', async () => {
@@ -392,10 +405,12 @@
         analogStepCharacteristic1 = await service.getCharacteristic(analogStepCharacteristicUuid1);
         analogCoefCharacteristic2 = await service.getCharacteristic(analogCoefCharacteristicUuid2);
         analogStepCharacteristic2 = await service.getCharacteristic(analogStepCharacteristicUuid2);
+        bikeLockCharacteristic = await service.getCharacteristic(bikeLockCharacteristicUuid);
 
         sensorCharacteristic.startNotifications();
         sensorCharacteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
         await new Promise(r => setTimeout(r, 1000));
+        fetchBikeLockStateFromBle();
         fetchChartDataFromBle();
         loadSliderValuesFromBle();
         
@@ -599,6 +614,60 @@ async function fetchDefaultDataFromBle() {
   }
 }
 
+async function fetchBikeLockStateFromBle() {
+  if (!bikeLockCharacteristic) {
+    console.error("Not connected to BLE device.");
+    return;
+  }
+
+  try {
+    console.log("Requesting bike lock data...");
+    const value = await bleQueue.enqueue(() => bikeLockCharacteristic.readValue());
+    console.log(value);
+    const boolValue = Int8Array(value.buffer)[0] === 0 ? false: true;
+    bikeLockStatus = boolValue;
+    updateButtonColor();
+  } catch (error) {
+    console.error("Error fetching bike lock data:", error);
+  }
+}
+
+async function switchBikeLockState() {
+  if (!bikeLockCharacteristic) {
+    console.error("Not connected to BLE device.");
+    return;
+  }
+
+  const combinedData = new Uint8Array([bikeLockStatus]); // Use Float64Array for double precision
+
+  try {
+    // Ensure the data length matches the expected size
+    if (combinedData.length !== 1) {
+      console.error("Invalid data length. Expected 1 value.");
+      return;
+    }
+
+    // Send all data as a single chunk
+    const buffer = new Uint8Array(combinedData.buffer); // Convert to Uint8Array for BLE
+    await bleQueue.enqueue(() => bikeLockCharacteristic.writeValue(buffer));
+    console.log("Sent bike lock data");
+  } catch (error) {
+    console.error("Error sending bike lock:", error);
+  }
+
+  fetchBikeLockStateFromBle();
+}
+
+function updateButtonColor() {
+    if (status === true) {
+      bikeLockButton.classList.remove("button-red");
+      bikeLockButton.innerHTML  = "Bike locked";
+    } else {
+      bikeLockButton.classList.add("button-red");
+      bikeLockButton.innerHTML  = "Bike unlocked";
+    }
+  }
+
 async function sendChartDataToBle(chartData) {
   if (!coefsCharacteristic) {
     console.error("Not connected to BLE device.");
@@ -677,7 +746,8 @@ document.getElementById('saveDropdownValue').addEventListener('click', () => {
 });
 document.getElementById('loadDropdownValue').addEventListener('click', fetchChartDataFromBle);
 document.getElementById('setDefaultValue').addEventListener('click', fetchDefaultDataFromBle);
-
+document.getElementById('bikeLockButton').addEventListener('click', switchBikeLockState);
+updateButtonColor();
 
 </script>
 
