@@ -670,9 +670,8 @@ async function switchBikeLockState() {
     }
 
     // Send all data as a single chunk
-    const buffer = new Uint8Array(combinedData.buffer); // Convert to Uint8Array for BLE
-    await bleQueue.enqueue(() => bikeLockCharacteristic.writeValue(buffer));
-    console.log("Sent bike lock data");
+    await bleQueue.enqueue(() => bikeLockCharacteristic.writeValue(combinedData));
+    console.log("Sent bike lock data %s", combinedData);
   } catch (error) {
     console.error("Error sending bike lock:", error);
   }
