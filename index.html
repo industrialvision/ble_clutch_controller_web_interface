@@ -645,7 +645,7 @@ async function fetchBikeLockStateFromBle() {
     console.log("Requesting bike lock data...");
     const value = await bleQueue.enqueue(() => bikeLockCharacteristic.readValue());
     console.log(value);
-    const boolValue = Int8Array(value.buffer)[0] === 0 ? false: true;
+    const boolValue = new Int8Array(value.buffer)[0] === 0 ? false: true;
     bikeLockStatus = boolValue;
     updateButtonColor();
   } catch (error) {
