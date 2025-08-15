@@ -386,39 +386,60 @@
 
     // Подключение Bluetooth
     connectButton.addEventListener('click', async () => {
-      try {
-        bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [{ name: deviceName }],
-          optionalServices: [bleServiceUuid]
-        });
-
-        const server = await bleDevice.gatt.connect();
-        bleStateContainer.textContent = 'Connected';
-        bleStateContainer.style.color = "#24af24"; // Зеленый цвет
-
-        const service = await server.getPrimaryService(bleServiceUuid);
-        sensorCharacteristic = await service.getCharacteristic(sensorCharacteristicUuid);
-        commandCharacteristic = await service.getCharacteristic(commandCharacteristicUuid);
-        coefsCharacteristic = await service.getCharacteristic(coefsCharacteristicUuid);
-        defCoefsCharacteristic = await service.getCharacteristic(defCoefsCharacteristicUuid);
-        analogCoefCharacteristic1 = await service.getCharacteristic(analogCoefCharacteristicUuid1);
-        analogStepCharacteristic1 = await service.getCharacteristic(analogStepCharacteristicUuid1);
-        analogCoefCharacteristic2 = await service.getCharacteristic(analogCoefCharacteristicUuid2);
-        analogStepCharacteristic2 = await service.getCharacteristic(analogStepCharacteristicUuid2);
-        bikeLockCharacteristic = await service.getCharacteristic(bikeLockCharacteristicUuid);
-
-        sensorCharacteristic.startNotifications();
-        sensorCharacteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
-        await new Promise(r => setTimeout(r, 1000));
-        fetchBikeLockStateFromBle();
-        fetchChartDataFromBle();
-        loadSliderValuesFromBle();
-        
-      } catch (error) {
-        bleStateContainer.textContent = 'Failed to connect: ' + error;
-        bleStateContainer.style.color = "#d13a30"; // Красный цвет
-      }
+  try {
+    bleDevice = await navigator.bluetooth.requestDevice({
+      filters: [{ name: deviceName }],
+      optionalServices: [bleServiceUuid]
     });
+
+    const server = await bleDevice.gatt.connect();
+    bleStateContainer.textContent = 'Connected';
+    bleStateContainer.style.color = "#24af24"; // Зеленый цвет
+
+    const service = await server.getPrimaryService(bleServiceUuid);
+    sensorCharacteristic = await service.getCharacteristic(sensorCharacteristicUuid);
+    commandCharacteristic = await service.getCharacteristic(commandCharacteristicUuid);
+    coefsCharacteristic = await service.getCharacteristic(coefsCharacteristicUuid);
+    defCoefsCharacteristic = await service.getCharacteristic(defCoefsCharacteristicUuid);
+    analogCoefCharacteristic1 = await service.getCharacteristic(analogCoefCharacteristicUuid1);
+    analogStepCharacteristic1 = await service.getCharacteristic(analogStepCharacteristicUuid1);
+    analogCoefCharacteristic2 = await service.getCharacteristic(analogCoefCharacteristicUuid2);
+    analogStepCharacteristic2 = await service.getCharacteristic(analogStepCharacteristicUuid2);
+
+    // Try bike lock characteristic, but allow connection if missing/fails
+    try {
+      bikeLockCharacteristic = await service.getCharacteristic(bikeLockCharacteristicUuid);
+    } catch (err) {
+      console.warn("Bike lock characteristic not found:", err);
+      bikeLockCharacteristic = null;
+    }
+
+    sensorCharacteristic.startNotifications();
+    sensorCharacteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
+
+    await new Promise(r => setTimeout(r, 1000));
+
+    // Only call fetch if bikeLockCharacteristic is available
+    if (bikeLockCharacteristic) {
+      try {
+        await fetchBikeLockStateFromBle();
+      } catch (err) {
+        console.warn("Failed to fetch bike lock state:", err);
+      }
+      bikeLockButton.style.visibility='visible';
+    } else {
+      bikeLockButton.style.visibility='hidden';
+    }
+
+    await fetchChartDataFromBle();
+    await loadSliderValuesFromBle();
+
+  } catch (error) {
+    bleStateContainer.textContent = 'Failed to connect: ' + error;
+    bleStateContainer.style.color = "#d13a30"; // Красный цвет
+  }
+});
+
 
     // Отключение Bluetooth
     disconnectButton.addEventListener('click', () => {
@@ -616,7 +637,7 @@ async function fetchDefaultDataFromBle() {
 
 async function fetchBikeLockStateFromBle() {
   if (!bikeLockCharacteristic) {
-    console.error("Not connected to BLE device.");
+    console.error("Not connected to BLE device with bike lock.");
     return;
   }
 
@@ -634,7 +655,7 @@ async function fetchBikeLockStateFromBle() {
 
 async function switchBikeLockState() {
   if (!bikeLockCharacteristic) {
-    console.error("Not connected to BLE device.");
+    console.error("Not connected to BLE device with bike lock.");
     return;
   }
 
