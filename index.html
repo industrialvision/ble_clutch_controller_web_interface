@@ -311,7 +311,7 @@
     const bleStateContainer = document.getElementById('bleState');
     const voltageContainerA0 = document.getElementById('voltageContainerA0');
     const voltageContainerA1 = document.getElementById('voltageContainerA1');
-    const verticalVoltageLine = document.getElementById('verticalVoltageLine');
+    //const verticalVoltageLine = document.getElementById('verticalVoltageLine');
     const fullyPressedValueA0Container = document.getElementById('fullyPressedValueA0');
     const fullyReleasedValueA0Container = document.getElementById('fullyReleasedValueA0');
     const fullyPressedValueA1Container = document.getElementById('fullyPressedValueA1');
@@ -470,7 +470,7 @@ const handleCharacteristicValueChanged = (event) => {
     fullyPressedValueA1Container.textContent = fullyPressedValueA1;
     fullyReleasedValueA1Container.textContent = fullyReleasedValueA1;
 
-    updateverticalVoltageLine(currentVoltageA0);
+    //updateverticalVoltageLine(currentVoltageA0);
   }
 };
 
@@ -659,7 +659,7 @@ async function switchBikeLockState() {
     return;
   }
 
-  const combinedData = new Uint8Array([bikeLockStatus]); // Use Float64Array for double precision
+  const combinedData = new Uint8Array([!bikeLockStatus]);
 
   try {
     // Ensure the data length matches the expected size
@@ -681,10 +681,10 @@ async function switchBikeLockState() {
 
 function updateButtonColor() {
     if (status === true) {
-      bikeLockButton.classList.remove("button-red");
+      bikeLockButton.classList.add("button-red");
       bikeLockButton.innerHTML  = "Bike locked";
     } else {
-      bikeLockButton.classList.add("button-red");
+      bikeLockButton.classList.remove("button-red");
       bikeLockButton.innerHTML  = "Bike unlocked";
     }
   }
