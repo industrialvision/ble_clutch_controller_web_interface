@@ -643,7 +643,7 @@ async function fetchBikeLockStateFromBle() {
 
   try {
     console.log("Requesting bike lock data...");
-    const value = await bleQueue.enqueue(() => bikeLockCharacteristic.readValue());
+    value = await bleQueue.enqueue(() => bikeLockCharacteristic.readValue());
     value = new Int8Array(value.buffer)[0];
     console.log(value);
     const boolValue = value[0] === 0 ? false: true;
