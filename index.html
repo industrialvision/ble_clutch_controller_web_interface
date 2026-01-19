@@ -30,19 +30,15 @@
       cursor: pointer;
       width: 47%;
       box-sizing: border-box;
-      
-    }
-
+          }
     .button-red {
     background-color: red !important;
     color: white;
     }
-
     .button-red:hover {
       background-color: rgb(255, 75, 75) !important;
       color: white;
     }
-
     button:hover {
       background-color: #45a049;
     }
@@ -57,8 +53,7 @@
   justify-content: center;
   gap: 10px; /* Optional: adds space between buttons */
   margin: 10px 0; /* Optional: adds vertical margin */
-      
-    }
+          }
     .container p {
       font-size: 18px;
       text-align: center;
@@ -96,7 +91,6 @@
             position: relative;
             width: 100%;
         }
-
         /* Styling the range input */
         input[type="range"] {
             -webkit-appearance: none; /* Removes default styles for Safari */
@@ -109,7 +103,6 @@
             margin: 10px 0;
             transition: background 0.3s ease;
         }
-
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none; /* Removes default styles for Safari */
             appearance: none;
@@ -120,7 +113,6 @@
             border-radius: 50%;
             cursor: pointer;
         }
-
         input[type="range"]::-moz-range-thumb {
             width: 20px;
             height: 20px;
@@ -129,20 +121,19 @@
             border-radius: 50%;
             cursor: pointer;
         }
+        /* Tooltip styling - HIDDEN as per request */
+      .tooltip {
+    display: none !important; 
+}
 
-        /* Tooltip styling */
-        .tooltip {
-            visibility: hidden;
-            position: absolute;
-            top: -30px;
-            left: 85%; /* Adjust according to the slider thumb */
-            transform: translateX(-50%);
-            background: #fff;
-            color: #333;
-            padding: 5px 10px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            font-size: 14px;
+        /* Styles for new Audio Select */
+        .audio-select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: white;
+            margin-top: 5px;
         }
   </style>
 </head>
@@ -157,122 +148,213 @@
     <button id="bikeLockButton">Bike locked</button>
     <div class="chart-container">
       <canvas id="chartJSContainer"></canvas>
-    </div>
-<div class="flex justify-center items-center mt-5 space-x-4">
+    </div><div class="flex justify-center items-center mt-5 space-x-4">
 
-
-  <!-- Save Button -->
   <button id="saveDropdownValue"
           class="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
     Save
   </button>
-
-   <!-- Save Button -->
    <button id="loadDropdownValue"
    class="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
     Load
   </button>
-
-  <!-- Default Button -->
   <button id="setDefaultValue"
           class="px-4 py-2 bg-gray-500 text-white text-sm font-medium rounded-md shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
     Default
-  </button>
-</div>
+  </button></div>
+ 
+
     <h2>Flywheel Effect Acceleration</h2>
     <div class="slider-container">
-      <!-- Tooltip displaying value -->
-      <div class="tooltip" id="tooltip1">85</div>
-      <!-- Range input slider -->
+      <div class="tooltip" id="tooltip1">15</div>
       <input type="range" id="slider1" min="1" max="30" value="15">
     </div>
     <h2>Flywheel Effect Deceleration</h2>
     <div class="slider-container">
-      <!-- Tooltip displaying value -->
-      <div class="tooltip" id="tooltip3">85</div>
-      <!-- Range input slider -->
+      <div class="tooltip" id="tooltip3">15</div>
       <input type="range" id="slider3" min="1" max="30" value="15">
     </div>
  <h2>Clutch engagement speed</h2>
     <div class="slider-container">
-      <!-- Tooltip displaying value -->
-      <div class="tooltip" id="tooltip4">85</div>
-      <!-- Range input slider -->
+      <div class="tooltip" id="tooltip4">15</div>
       <input type="range" id="slider4" min="1" max="81" value="15">
     </div>
 
-    <h3>Clutch calibration</h3>
+    <div class="p-4 mt-6 bg-gray-100 rounded-lg shadow-inner">
+        <h2 class="text-xl font-bold mb-4">Engine Sound Settings</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-bold text-gray-700">Volume</label>
+                <div class="slider-container">
+                    <div class="tooltip" id="volTip">50</div>
+                    <input type="range" id="volSlider" min="0" max="100" value="50">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700">Waveform (Timbre)</label>
+                <select id="waveType" class="audio-select">
+                    <option value="sawtooth">Sawtooth (Engine-like)</option>
+                    <option value="sine">Sine (Soft)</option>
+                    <option value="square">Square (Aggressive)</option>
+                    <option value="triangle">Triangle (Hollow)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700">Idle Freq (Hz)</label>
+                <div class="slider-container">
+                    <div class="tooltip" id="freqMinTip">40</div>
+                    <input type="range" id="freqMinSlider" min="20" max="200" value="40">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold text-gray-700">Max Freq (Hz)</label>
+                <div class="slider-container">
+                    <div class="tooltip" id="freqMaxTip">300</div>
+                    <input type="range" id="freqMaxSlider" min="100" max="1000" value="300">
+                </div>
+            </div>
+        </div>
+    </div>
+
     
+    <h3 class="mt-8">Clutch calibration</h3>
     <div class="inline-row">
       <div class="connectionContainer">
         <button id="savePressedButton">Save Clutch Pressed</button>
         <button id="saveReleasedButton">Save Clutch Released</button>
       </div>
-      
-      <p><span id="voltageContainerA0">-</span> | <span id="fullyPressedValueA0">-</span> | <span id="fullyReleasedValueA0">-</span></p>
+            <p><span id="voltageContainerA0">-</span> | <span id="fullyPressedValueA0">-</span> | <span id="fullyReleasedValueA0">-</span></p>
       <h3>Throttle calibration</h3>
       <div class="connectionContainer">
-
         <button id="savePressedButtonA1">Save Throttle Open</button>
         <button id="saveReleasedButtonA1">Save Throttle Closed</button>
-        
       </div>
-      
-      <p><span id="voltageContainerA1">-</span> | <span id="fullyPressedValueA1">-</span> | <span id="fullyReleasedValueA1">-</span></p>
+            <p><span id="voltageContainerA1">-</span> | <span id="fullyPressedValueA1">-</span> | <span id="fullyReleasedValueA1">-</span></p>
     </div>
-    
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lodash"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata"></script>
+
   <script>
-    // Function to update tooltip position, value, and background gradient
-    function updateSlider(slider, tooltip) {
-        const value = slider.value;
-        tooltip.innerText = value;
+    let audioCtx = null, oscillator = null, gainNode = null;
+    let masterVol = 0.5, freqMin = 40, freqMax = 300;
 
-        // Calculate percentage for dynamic position and background
-        const percentage = (value - slider.min) / (slider.max - slider.min) * 100;
-
-        // Update tooltip position
-        tooltip.style.left = `calc(${percentage}% + (${8 - percentage * 0.15}px))`;
-
-        // Update slider background gradient
-        slider.style.background = `linear-gradient(to right, #2a86d6 ${percentage}%, #d3d3d3 ${percentage}%)`;
+    function saveAudioSettings() {
+        const settings = {
+            masterVol: masterVol,
+            freqMin: freqMin,
+            freqMax: freqMax,
+            currentWave: document.getElementById('waveType').value
+        };
+        localStorage.setItem('audioSettings', JSON.stringify(settings));
     }
 
-    // Slider 1
+    function loadAudioSettings() {
+        const saved = localStorage.getItem('audioSettings');
+        if (saved) {
+            const s = JSON.parse(saved);
+            masterVol = s.masterVol;
+            freqMin = s.freqMin;
+            freqMax = s.freqMax;
+            
+            document.getElementById('volSlider').value = masterVol * 100;
+            document.getElementById('freqMinSlider').value = freqMin;
+            document.getElementById('freqMaxSlider').value = freqMax;
+            document.getElementById('waveType').value = s.currentWave;
+        }
+    }
+
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        oscillator = audioCtx.createOscillator();
+        gainNode = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(600, audioCtx.currentTime);
+        oscillator.type = document.getElementById('waveType').value;
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+    }
+
+   let lastSoundUpdate = 0;
+   function updateEngineSound(v, minV, maxV) {
+       if (!audioCtx || !oscillator || !gainNode) return;
+       const now = performance.now();
+       if (now - lastSoundUpdate < 20) return; 
+       lastSoundUpdate = now;
+
+       let norm = (v - minV) / (maxV - minV);
+       norm = Math.max(0, Math.min(1, norm));
+       
+       const freq = freqMin + (norm * (freqMax - freqMin));
+       oscillator.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.05);
+       
+       const targetVol = masterVol * (0.2 + (norm * 0.8));
+       gainNode.gain.setTargetAtTime(v === 0 ? 0 : targetVol, audioCtx.currentTime, 0.05);
+   }
+  </script>
+
+  <script>
+    function updateSlider(slider, tooltip, color = "#2a86d6") {
+        const value = slider.value;
+        const percentage = (value - slider.min) / (slider.max - slider.min) * 100;
+        slider.style.background = `linear-gradient(to right, ${color} ${percentage}%, #d3d3d3 ${percentage}%)`;
+    }
+
     const slider1 = document.getElementById("slider1");
     const tooltip1 = document.getElementById("tooltip1");
+    slider1.addEventListener("input", () => updateSlider(slider1, tooltip1));
 
-    slider1.addEventListener("input", () => {
-        updateSlider(slider1, tooltip1);
-    });
-
-    // Slider 3
     const slider3 = document.getElementById("slider3");
     const tooltip3 = document.getElementById("tooltip3");
+    slider3.addEventListener("input", () => updateSlider(slider3, tooltip3));
 
-    slider3.addEventListener("input", () => {
-        updateSlider(slider3, tooltip3);
-    });
-
-    // Slider 4
     const slider4 = document.getElementById("slider4");
     const tooltip4 = document.getElementById("tooltip4");
+    slider4.addEventListener("input", () => updateSlider(slider4, tooltip4));
 
-    slider4.addEventListener("input", () => {
-        updateSlider(slider4, tooltip4);
+    document.getElementById('volSlider').addEventListener('input', (e) => {
+        masterVol = e.target.value / 100;
+        updateSlider(e.target, document.getElementById('volTip'), "#f59e0b");
+        saveAudioSettings();
+    });
+    document.getElementById('freqMinSlider').addEventListener('input', (e) => {
+        freqMin = parseInt(e.target.value);
+        updateSlider(e.target, document.getElementById('freqMinTip'), "#3b82f6");
+        saveAudioSettings();
+    });
+    document.getElementById('freqMaxSlider').addEventListener('input', (e) => {
+        freqMax = parseInt(e.target.value);
+        updateSlider(e.target, document.getElementById('freqMaxTip'), "#ef4444");
+        saveAudioSettings();
+    });
+    document.getElementById('waveType').addEventListener('change', (e) => {
+        if (oscillator) oscillator.type = e.target.value;
+        saveAudioSettings();
     });
 
-    // Initial positioning on page load
+    loadAudioSettings();
     updateSlider(slider3, tooltip3);
     updateSlider(slider1, tooltip1);
     updateSlider(slider4, tooltip4);
-    
+    updateSlider(document.getElementById('volSlider'), document.getElementById('volTip'), "#f59e0b");
+    updateSlider(document.getElementById('freqMinSlider'), document.getElementById('freqMinTip'), "#3b82f6");
+    updateSlider(document.getElementById('freqMaxSlider'), document.getElementById('freqMaxTip'), "#ef4444");
   </script>
+
   <script>
     const chartConfiguration = {
       type: "line",
@@ -310,35 +392,28 @@
             fill: true,
             tension: 0.4,
             borderWidth: 2,
-            pointHitRadius: 25,
-          },
+            pointHitRadius: 25,          },
         ],
       },
     };
 
     let myChart;
-
     document.body.onload = function () {
       const ctx = document.getElementById("chartJSContainer").getContext("2d");
       myChart = new Chart(ctx, chartConfiguration);
-      
-      // Save data to localStorage on drag end
       myChart.options.plugins.dragData = {
         onDragEnd: function () {
           localStorage.setItem('chartDataClutch', JSON.stringify(myChart.data.datasets[0].data));
           localStorage.setItem('chartDataGas', JSON.stringify(myChart.data.datasets[1].data));
-          console.log("Chart data saved to localStorage");
         }
       };
     };
-  </script>
-<script>
+  </script><script>
     const connectButton = document.getElementById('connectBleButton');
     const disconnectButton = document.getElementById('disconnectBleButton');
     const bleStateContainer = document.getElementById('bleState');
     const voltageContainerA0 = document.getElementById('voltageContainerA0');
     const voltageContainerA1 = document.getElementById('voltageContainerA1');
-    //const verticalVoltageLine = document.getElementById('verticalVoltageLine');
     const fullyPressedValueA0Container = document.getElementById('fullyPressedValueA0');
     const fullyReleasedValueA0Container = document.getElementById('fullyReleasedValueA0');
     const fullyPressedValueA1Container = document.getElementById('fullyPressedValueA1');
@@ -351,7 +426,6 @@
     const deviceName = 'Stark_Clutch';
     const bleServiceUuid = '19b10000-e8f2-537e-4f6c-d104768a1214';
     const sensorCharacteristicUuid = '19b10001-e8f2-537e-4f6c-d104768a1214';
-    const sensorA1CharacteristicUuid = '19b10003-e8f2-537e-4f6c-d104768a1214';
     const commandCharacteristicUuid = '19b10002-e8f2-537e-4f6c-d104768a1214';
     const coefsCharacteristicUuid = '19b10004-e8f2-537e-4f6c-d104768a1214';
     const defCoefsCharacteristicUuid = '19b10005-e8f2-537e-4f6c-d104768a1214';
@@ -362,450 +436,161 @@
     const bikeLockCharacteristicUuid = '19b10010-e8f2-537e-4f6c-d104768a1214';
 
     class BLEOperationQueue {
-      constructor() {
-        this.queue = [];
-        this.isProcessing = false;
-      }
-
-      enqueue(operation) {
-        return new Promise((resolve, reject) => {
-          this.queue.push({ operation, resolve, reject });
-          this.processQueue();
-        });
-      }
-
+      constructor() { this.queue = []; this.isProcessing = false; }
+      enqueue(operation) { return new Promise((resolve, reject) => { this.queue.push({ operation, resolve, reject }); this.processQueue(); }); }
       async processQueue() {
         if (this.isProcessing || this.queue.length === 0) return;
         this.isProcessing = true;
         await new Promise(r => setTimeout(r, 10));
-
         const { operation, resolve, reject } = this.queue.shift();
-        try {
-          const result = await operation();
-          resolve(result);
-        } catch (error) {
-          reject(error);
-        } finally {
-          this.isProcessing = false;
-          this.processQueue();
-        }
+        try { const result = await operation(); resolve(result); } catch (error) { reject(error); } finally { this.isProcessing = false; this.processQueue(); }
       }
     }
-
     const bleQueue = new BLEOperationQueue();
-
-
-    let bleDevice;
-    let sensorCharacteristic;
-    let commandCharacteristic;
-    let coefsCharacteristic;
-    let defCoefsCharacteristic;
-    let analogCoefCharacteristic1;
-    let analogStepCharacteristic1;
-    let analogCoefCharacteristic2;
-    let analogStepCharacteristic2;
-    let bikeLockCharacteristic;
-    let fullyPressedValueA0 = 0;
-    let fullyReleasedValueA0 = 0;
-    let fullyPressedValueA1 = 0;
-    let fullyReleasedValueA1 = 0;
+    let bleDevice, sensorCharacteristic, commandCharacteristic, coefsCharacteristic, defCoefsCharacteristic;
+    let analogCoefCharacteristic1, analogStepCharacteristic1, analogCoefCharacteristic2, analogStepCharacteristic2, bikeLockCharacteristic;
     let bikeLockStatus = false;
 
-    // Подключение Bluetooth
     connectButton.addEventListener('click', async () => {
-  try {
-    bleDevice = await navigator.bluetooth.requestDevice({
-      filters: [{ name: deviceName }],
-      optionalServices: [bleServiceUuid]
+      try {
+        initAudio(); 
+        bleDevice = await navigator.bluetooth.requestDevice({ filters: [{ name: deviceName }], optionalServices: [bleServiceUuid] });
+        const server = await bleDevice.gatt.connect();
+        bleStateContainer.textContent = 'Connected';
+        bleStateContainer.style.color = "#24af24";
+        const service = await server.getPrimaryService(bleServiceUuid);
+        sensorCharacteristic = await service.getCharacteristic(sensorCharacteristicUuid);
+        commandCharacteristic = await service.getCharacteristic(commandCharacteristicUuid);
+        coefsCharacteristic = await service.getCharacteristic(coefsCharacteristicUuid);
+        defCoefsCharacteristic = await service.getCharacteristic(defCoefsCharacteristicUuid);
+        analogCoefCharacteristic1 = await service.getCharacteristic(analogCoefCharacteristicUuid1);
+        analogStepCharacteristic1 = await service.getCharacteristic(analogStepCharacteristicUuid1);
+        analogCoefCharacteristic2 = await service.getCharacteristic(analogCoefCharacteristicUuid2);
+        analogStepCharacteristic2 = await service.getCharacteristic(analogStepCharacteristicUuid2);
+        try { bikeLockCharacteristic = await service.getCharacteristic(bikeLockCharacteristicUuid); } catch (err) { bikeLockCharacteristic = null; }
+        sensorCharacteristic.startNotifications();
+        sensorCharacteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
+        await new Promise(r => setTimeout(r, 1000));
+        if (bikeLockCharacteristic) { await fetchBikeLockStateFromBle(); bikeLockButton.style.visibility='visible'; }
+        await fetchChartDataFromBle();
+        await loadSliderValuesFromBle();
+      } catch (error) { bleStateContainer.textContent = 'Failed: ' + error; bleStateContainer.style.color = "#d13a30"; }
     });
 
-    const server = await bleDevice.gatt.connect();
-    bleStateContainer.textContent = 'Connected';
-    bleStateContainer.style.color = "#24af24"; // Зеленый цвет
-
-    const service = await server.getPrimaryService(bleServiceUuid);
-    sensorCharacteristic = await service.getCharacteristic(sensorCharacteristicUuid);
-    commandCharacteristic = await service.getCharacteristic(commandCharacteristicUuid);
-    coefsCharacteristic = await service.getCharacteristic(coefsCharacteristicUuid);
-    defCoefsCharacteristic = await service.getCharacteristic(defCoefsCharacteristicUuid);
-    analogCoefCharacteristic1 = await service.getCharacteristic(analogCoefCharacteristicUuid1);
-    analogStepCharacteristic1 = await service.getCharacteristic(analogStepCharacteristicUuid1);
-    analogCoefCharacteristic2 = await service.getCharacteristic(analogCoefCharacteristicUuid2);
-    analogStepCharacteristic2 = await service.getCharacteristic(analogStepCharacteristicUuid2);
-
-    // Try bike lock characteristic, but allow connection if missing/fails
-    try {
-      bikeLockCharacteristic = await service.getCharacteristic(bikeLockCharacteristicUuid);
-    } catch (err) {
-      console.warn("Bike lock characteristic not found:", err);
-      bikeLockCharacteristic = null;
-    }
-
-    sensorCharacteristic.startNotifications();
-    sensorCharacteristic.addEventListener('characteristicvaluechanged', handleCharacteristicValueChanged);
-
-    await new Promise(r => setTimeout(r, 1000));
-
-    // Only call fetch if bikeLockCharacteristic is available
-    if (bikeLockCharacteristic) {
-      try {
-        await fetchBikeLockStateFromBle();
-      } catch (err) {
-        console.warn("Failed to fetch bike lock state:", err);
-      }
-      bikeLockButton.style.visibility='visible';
-    } else {
-      bikeLockButton.style.visibility='hidden';
-    }
-
-    await fetchChartDataFromBle();
-    await loadSliderValuesFromBle();
-
-  } catch (error) {
-    bleStateContainer.textContent = 'Failed to connect: ' + error;
-    bleStateContainer.style.color = "#d13a30"; // Красный цвет
-  }
-});
-
-
-    // Отключение Bluetooth
     disconnectButton.addEventListener('click', () => {
       if (bleDevice && bleDevice.gatt.connected) {
         bleDevice.gatt.disconnect();
         bleStateContainer.textContent = 'Disconnected';
-        bleStateContainer.style.color = "#d13a30"; // Красный цвет
+        bleStateContainer.style.color = "#d13a30";
+        if(gainNode) gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
       }
     });
 
-    // Handle characteristic value changes without throttling
-const handleCharacteristicValueChanged = (event) => {
-  const value = new TextDecoder().decode(event.target.value);
-  const data = value.split(',');
+    const handleCharacteristicValueChanged = (event) => {
+      const value = new TextDecoder().decode(event.target.value);
+      const data = value.split(',');
+      if (data.length === 6) {
+        const curA0 = parseFloat(data[0]);
+        const curA1 = parseFloat(data[3]);
+        const prsA1 = parseFloat(data[4]);
+        const relA1 = parseFloat(data[5]);
 
-  if (data.length === 6) {
-    const currentVoltageA0 = parseFloat(data[0]);
-    fullyPressedValueA0 = parseFloat(data[1]);
-    fullyReleasedValueA0 = parseFloat(data[2]);
-    const currentVoltageA1 = parseFloat(data[3]);
-    fullyPressedValueA1 = parseFloat(data[4]);
-    fullyReleasedValueA1 = parseFloat(data[5]);
+        voltageContainerA0.textContent = curA0;
+        voltageContainerA1.textContent = curA1;
+        fullyPressedValueA0Container.textContent = data[1];
+        fullyReleasedValueA0Container.textContent = data[2];
+        fullyPressedValueA1Container.textContent = prsA1;
+        fullyReleasedValueA1Container.textContent = relA1;
+        
+        // ЗВУК ПРИВЯЗАН К A1 (ГАЗ)
+        updateEngineSound(curA1, relA1, prsA1);
+      }
+    };
 
-    voltageContainerA0.textContent = currentVoltageA0;
-    voltageContainerA1.textContent = currentVoltageA1;
-    fullyPressedValueA0Container.textContent = fullyPressedValueA0;
-    fullyReleasedValueA0Container.textContent = fullyReleasedValueA0;
-    fullyPressedValueA1Container.textContent = fullyPressedValueA1;
-    fullyReleasedValueA1Container.textContent = fullyReleasedValueA1;
-
-    //updateverticalVoltageLine(currentVoltageA0);
-  }
-};
-
-  async function loadSliderValuesFromBle() {
-    if (!analogCoefCharacteristic1 || !analogStepCharacteristic1 || !analogCoefCharacteristic2 || !analogStepCharacteristic2) {
-      console.error("Not connected to BLE device.");
-      return;
+    async function loadSliderValuesFromBle() {
+        try {
+            const c1 = await bleQueue.enqueue(() => analogCoefCharacteristic1.readValue());
+            slider1.value = new Float32Array(c1.buffer)[0] * 100;
+            updateSlider(slider1, tooltip1);
+            const c2 = await bleQueue.enqueue(() => analogCoefCharacteristic2.readValue());
+            slider3.value = new Float32Array(c2.buffer)[0] * 100;
+            updateSlider(slider3, tooltip3);
+            const s2 = await bleQueue.enqueue(() => analogStepCharacteristic2.readValue());
+            slider4.value = new Int16Array(s2.buffer)[0];
+            updateSlider(slider4, tooltip4);
+        } catch (e) { console.error(e); }
     }
 
-    try {
-      // Read values for Slider 1 (Analog Coef 1)
-      const coefValue1 = await bleQueue.enqueue(() => analogCoefCharacteristic1.readValue());
-      const coefValue1Float = new Float32Array(coefValue1.buffer)[0] * 100; // Convert to percentage
-      slider1.value = coefValue1Float;
-      updateSlider(slider1, tooltip1);
+    async function updateAnalogCoef1(v) { const b = new Float32Array([v/100]); await bleQueue.enqueue(() => analogCoefCharacteristic1.writeValue(b)); }
+    async function updateAnalogCoef2(v) { const b = new Float32Array([v/100]); await bleQueue.enqueue(() => analogCoefCharacteristic2.writeValue(b)); }
+    async function updateAnalogStep2(v) { const b = new Int16Array([v]); await bleQueue.enqueue(() => analogStepCharacteristic2.writeValue(b)); }
 
-      console.log("Slider 1 loaded");
-
-      // Read values for Slider 3 (Analog Coef 2)
-      const coefValue2 = await bleQueue.enqueue(() => analogCoefCharacteristic2.readValue());
-      const coefValue2Float = new Float32Array(coefValue2.buffer)[0] * 100; // Convert to percentage
-      slider3.value = coefValue2Float;
-      updateSlider(slider3, tooltip3);
-      console.log("Slider 3 loaded");
-
- // Read values for Slider 4 (Analog Step 2)
-      const stepValue2 = await bleQueue.enqueue(() => analogStepCharacteristic2.readValue());
-      const stepValue2Int = new Int16Array(stepValue2.buffer)[0];
-      slider4.value = stepValue2Int;
-      updateSlider(slider4, tooltip4);
-      console.log("Slider 4 loaded");
-
-      console.log("Slider values updated from BLE");
-    } catch (error) {
-      console.error("Error loading slider values from BLE:", error);
-    }
-  }
-
-    async function updateAnalogCoef1(value) {
-      if (!analogCoefCharacteristic1) {
-        console.error("Not connected to BLE device.");
-        return;
-      }
-      try {
-        console.log("Updating analog coef 1")
-        const realValue = value/100;
-        const buffer = new Float32Array([realValue])
-        await bleQueue.enqueue(() => analogCoefCharacteristic1.writeValue(buffer));
-      } catch (error) {
-        console.error("Error updating analog coef:", error);
-      }
-    }
-    async function updateAnalogStep1(value) {
-      if (!analogStepCharacteristic1) {
-        console.error("Not connected to BLE device.");
-        return;
-      }
-      try {
-        const realValue = value;
-        const buffer = new Int16Array([realValue])
-        await bleQueue.enqueue(() => analogStepCharacteristic1.writeValue(buffer));
-      } catch (error) {
-        console.error("Error updating analog coef:", error);
-      }
+    async function fetchChartDataFromBle() {
+        const val = await bleQueue.enqueue(() => coefsCharacteristic.readValue());
+        const dArr = new Float64Array(val.buffer);
+        if (dArr.length === 22) {
+            myChart.data.datasets[0].data = Array.from(dArr).slice(0, 11).map((y, i) => ({ x: i * 10, y }));
+            myChart.data.datasets[1].data = Array.from(dArr).slice(11, 22).map((y, i) => ({ x: i * 10, y }));
+            myChart.update();
+        }
     }
 
-    async function updateAnalogCoef2(value) {
-      if (!analogCoefCharacteristic2) {
-        console.error("Not connected to BLE device.");
-        return;
-      }
-      try {
-        const realValue = value/100;
-        const buffer = new Float32Array([realValue])
-        await bleQueue.enqueue(() => analogCoefCharacteristic2.writeValue(buffer));
-      } catch (error) {
-        console.error("Error updating analog coef:", error);
-      }
-    }
-    async function updateAnalogStep2(value) {
-      if (!analogStepCharacteristic2) {
-        console.error("Not connected to BLE device.");
-        return;
-      }
-      try {
-        const realValue = value;
-        const buffer = new Int16Array([realValue])
-        await bleQueue.enqueue(() => analogStepCharacteristic2.writeValue(buffer));
-      } catch (error) {
-        console.error("Error updating analog coef:", error);
-      }
-    }
-async function fetchChartDataFromBle() {
-  if (!coefsCharacteristic) {
-    console.error("Not connected to BLE device.");
-    return;
-  }
-
-  try {
-    // Request all coefficients data in a single chunk
-    console.log("Requesting coefficients data...");
-    const value = await bleQueue.enqueue(() => coefsCharacteristic.readValue());
-    console.log(value);
-    // Interpret the received data as a Float64Array (double precision)
-    const doubleArray = new Float64Array(value.buffer);
-
-    if (doubleArray.length !== 22) {
-      console.error(`Received data length mismatch: expected 22, got ${doubleArray.length}`);
-      return;
+    async function fetchDefaultDataFromBle() {
+        const val = await bleQueue.enqueue(() => defCoefsCharacteristic.readValue());
+        const dArr = new Float64Array(val.buffer);
+        if (dArr.length === 22) {
+            myChart.data.datasets[0].data = Array.from(dArr).slice(0, 11).map((y, i) => ({ x: i * 10, y }));
+            myChart.data.datasets[1].data = Array.from(dArr).slice(11, 22).map((y, i) => ({ x: i * 10, y }));
+            myChart.update();
+        }
     }
 
-    // Map the received data to chart datasets
-    // Convert the typed array into a normal JavaScript array
-    const normalArray = Array.from(doubleArray);
-
-    // Process the array as usual
-    myChart.data.datasets[0].data = normalArray.slice(0, 11).map((y, i) => ({ x: i * 10, y }));
-    myChart.data.datasets[1].data = normalArray.slice(11, 22).map((y, i) => ({ x: i * 10, y }));
-
-    myChart.update();
-
-    console.log("Chart data updated from ESP32");
-    console.log(doubleArray);
-  } catch (error) {
-    console.error("Error fetching chart data:", error);
-  }
-}
-
-async function fetchDefaultDataFromBle() {
-  if (!coefsCharacteristic) {
-    console.error("Not connected to BLE device.");
-    return;
-  }
-
-  try {
-    // Request all coefficients data in a single chunk
-    console.log("Requesting coefficients data...");
-    const value = await bleQueue.enqueue(() => defCoefsCharacteristic.readValue());
-    console.log(value);
-    // Interpret the received data as a Float64Array (double precision)
-    const doubleArray = new Float64Array(value.buffer);
-
-    if (doubleArray.length !== 22) {
-      console.error(`Received data length mismatch: expected 22, got ${doubleArray.length}`);
-      return;
+    async function fetchBikeLockStateFromBle() {
+        const val = await bleQueue.enqueue(() => bikeLockCharacteristic.readValue());
+        bikeLockStatus = new Int8Array(val.buffer)[0] !== 0;
+        updateButtonColor();
     }
 
-    // Map the received data to chart datasets
-    // Convert the typed array into a normal JavaScript array
-    const normalArray = Array.from(doubleArray);
+    async function switchBikeLockState() {
+        await bleQueue.enqueue(() => bikeLockCharacteristic.writeValue(new Uint8Array([!bikeLockStatus])));
+        fetchBikeLockStateFromBle();
+    }
 
-    // Process the array as usual
-    myChart.data.datasets[0].data = normalArray.slice(0, 11).map((y, i) => ({ x: i * 10, y }));
-    myChart.data.datasets[1].data = normalArray.slice(11, 22).map((y, i) => ({ x: i * 10, y }));
+    function updateButtonColor() {
+        bikeLockButton.classList.toggle("button-red", bikeLockStatus);
+        bikeLockButton.innerHTML = bikeLockStatus ? "Bike locked" : "Bike unlocked";
+    }
 
-    myChart.update();
+    async function sendChartDataToBle(chartData) {
+        const combined = new Float64Array([...chartData.datasets[0].data.map(p => p.y), ...chartData.datasets[1].data.map(p => p.y)]);
+        await bleQueue.enqueue(() => coefsCharacteristic.writeValue(new Uint8Array(combined.buffer)));
+    }
 
-    console.log("Chart data updated from ESP32");
-    console.log(doubleArray);
-  } catch (error) {
-    console.error("Error fetching chart data:", error);
-  }
-}
+    function addCommandListener(btn, cmd) {
+        btn.addEventListener('click', async () => {
+            if (commandCharacteristic) await bleQueue.enqueue(() => commandCharacteristic.writeValue(new TextEncoder().encode(cmd)));
+        });
+    }
 
-async function fetchBikeLockStateFromBle() {
-  if (!bikeLockCharacteristic) {
-    console.error("Not connected to BLE device with bike lock.");
-    return;
-  }
+    addCommandListener(savePressedButton, "Fully Pressed A0");
+    addCommandListener(saveReleasedButton, "Fully Released A0");
+    addCommandListener(savePressedButtonA1, "Fully Pressed A1");
+    addCommandListener(saveReleasedButtonA1, "Fully Released A1");
 
-  try {
-    console.log("Requesting bike lock data...");
-    const value = await bleQueue.enqueue(() => bikeLockCharacteristic.readValue());
-    const singleValue = new Int8Array(value.buffer)[0];
-    console.log(singleValue);
-    const boolValue = singleValue === 0 ? false: true;
-    bikeLockStatus = boolValue;
+    slider1.addEventListener("input", () => updateAnalogCoef1(slider1.value));
+    slider3.addEventListener("input", () => updateAnalogCoef2(slider3.value));
+    slider4.addEventListener("input", () => updateAnalogStep2(slider4.value));
+
+    document.getElementById('saveDropdownValue').addEventListener('click', () => sendChartDataToBle(myChart.data));
+    document.getElementById('loadDropdownValue').addEventListener('click', fetchChartDataFromBle);
+    document.getElementById('setDefaultValue').addEventListener('click', fetchDefaultDataFromBle);
+    document.getElementById('bikeLockButton').addEventListener('click', switchBikeLockState);
     updateButtonColor();
-  } catch (error) {
-    console.error("Error fetching bike lock data:", error);
-  }
-}
-
-async function switchBikeLockState() {
-  if (!bikeLockCharacteristic) {
-    console.error("Not connected to BLE device with bike lock.");
-    return;
-  }
-
-  const combinedData = new Uint8Array([!bikeLockStatus]);
-
-  try {
-    // Ensure the data length matches the expected size
-    if (combinedData.length !== 1) {
-      console.error("Invalid data length. Expected 1 value.");
-      return;
-    }
-
-    // Send all data as a single chunk
-    await bleQueue.enqueue(() => bikeLockCharacteristic.writeValue(combinedData));
-    console.log("Sent bike lock data %s", combinedData);
-  } catch (error) {
-    console.error("Error sending bike lock:", error);
-  }
-
-  fetchBikeLockStateFromBle();
-}
-
-function updateButtonColor() {
-    if (bikeLockStatus === true) {
-      bikeLockButton.classList.add("button-red");
-      bikeLockButton.innerHTML  = "Bike locked";
-    } else {
-      bikeLockButton.classList.remove("button-red");
-      bikeLockButton.innerHTML  = "Bike unlocked";
-    }
-  }
-
-async function sendChartDataToBle(chartData) {
-  if (!coefsCharacteristic) {
-    console.error("Not connected to BLE device.");
-    return;
-  }
-
-  // Extract and combine the datasets
-  const clutchData = chartData.datasets[0].data.map(point => point.y);
-  const gasData = chartData.datasets[1].data.map(point => point.y);
-  const combinedData = new Float64Array([...clutchData, ...gasData]); // Use Float64Array for double precision
-
-  try {
-    // Ensure the data length matches the expected size
-    if (combinedData.length !== 22) {
-      console.error("Invalid data length. Expected 22 values.");
-      return;
-    }
-
-    // Send all data as a single chunk
-    const buffer = new Uint8Array(combinedData.buffer); // Convert to Uint8Array for BLE
-    await bleQueue.enqueue(() => coefsCharacteristic.writeValue(buffer));
-    console.log("Sent all coefficients data as a single chunk");
-  } catch (error) {
-    console.error("Error sending chart data:", error);
-  }
-}
-
-// Update vertical voltage line
-function updateverticalVoltageLine(currentVoltage) {
-  const chartWidth = document.getElementById('chartJSContainer').width;
-  const voltageToWidthRatio = chartWidth / 1024;
-
-  const position = currentVoltage * voltageToWidthRatio;
-  verticalVoltageLine.style.left = `${position}px`;
-}
-
-// Helper function to add command listeners with the queue
-function addCommandListener(button, command) {
-  button.addEventListener('click', async () => {
-    if (!commandCharacteristic) {
-      console.error('Command characteristic not available.');
-      return;
-    }
-
-    try {
-      await bleQueue.enqueue(() =>
-        commandCharacteristic.writeValue(new TextEncoder().encode(command))
-      );
-      console.log(`Command sent: ${command}`);
-    } catch (error) {
-      console.error(`Error sending command: ${command}`, error);
-    }
-  });
-}
-
-// Add listeners to buttons
-addCommandListener(savePressedButton, "Fully Pressed A0");
-addCommandListener(saveReleasedButton, "Fully Released A0");
-addCommandListener(savePressedButtonA1, "Fully Pressed A1");
-addCommandListener(saveReleasedButtonA1, "Fully Released A1");
-
-slider1.addEventListener("input", () => {
-    updateAnalogCoef1(slider1.value)
-});
-
-slider3.addEventListener("input", () => {
-    updateAnalogCoef2(slider3.value)
-});
-
-slider4.addEventListener("input", () => {
-  updateAnalogStep2(slider4.value)
-});
-
-document.getElementById('saveDropdownValue').addEventListener('click', () => {
-  sendChartDataToBle(myChart.data);
-});
-document.getElementById('loadDropdownValue').addEventListener('click', fetchChartDataFromBle);
-document.getElementById('setDefaultValue').addEventListener('click', fetchDefaultDataFromBle);
-document.getElementById('bikeLockButton').addEventListener('click', switchBikeLockState);
-updateButtonColor();
-
 </script>
-
 <script>
-    // Функция для масштабирования значения, подобно map в Arduino
     Math.map = function (value, in_min, in_max, out_min, out_max) {
       return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     };
 </script>
-
-
 </body>
 </html>
